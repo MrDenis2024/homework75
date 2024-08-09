@@ -5,29 +5,38 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import React, {useEffect, useState} from 'react';
 import {CipherMutation, ICipher} from '../../../types';
 import {useAppSelector} from '../../../app/hooks';
-import {selectEncode} from '../CiphersSlice';
+import {selectDecode, selectEncode} from '../CiphersSlice';
 
 interface Props {
   onSubmitDecode: (decode: CipherMutation) => void;
+  onSubmitEncode: (encode: CipherMutation) => void;
   isLoading: boolean;
 }
 
-const CiphersForm: React.FC<Props> = ({onSubmitDecode, isLoading,}) => {
+const CiphersForm: React.FC<Props> = ({onSubmitDecode, onSubmitEncode, isLoading,}) => {
   const [state, setState] = useState<ICipher>({
     decode: '',
     encode: '',
     password: '',
   });
-  const encoded = useAppSelector(selectEncode);
+  const encodeMessage = useAppSelector(selectEncode);
+  const decodedMessage = useAppSelector(selectDecode);
 
   useEffect(() => {
-    if(encoded) {
-      setState((prevState) => ({
+    if (encodeMessage) {
+      setState(prevState => ({
         ...prevState,
-        decode: encoded,
+        decode: encodeMessage,
       }));
     }
-  }, [encoded]);
+
+    if (decodedMessage) {
+      setState(prevState => ({
+        ...prevState,
+        encode: decodedMessage,
+      }));
+    }
+  }, [encodeMessage, decodedMessage]);
 
   const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = event.target;
@@ -48,7 +57,10 @@ const CiphersForm: React.FC<Props> = ({onSubmitDecode, isLoading,}) => {
 
   const submitEncode = (event: React.FormEvent) => {
     event.preventDefault();
-    console.log(321);
+    onSubmitEncode({
+      message: state.decode,
+      password: state.password,
+    });
   };
 
 

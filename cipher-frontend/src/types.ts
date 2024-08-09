@@ -9,7 +9,10 @@ export interface CipherMutation {
   password: string;
 }
 
-export interface CipherEncode {
-  message: string;
-  password: string;
+export interface Encode {
+  encoded: string;
+}
+
+export interface Decode {
+  decoded: string;
 }
